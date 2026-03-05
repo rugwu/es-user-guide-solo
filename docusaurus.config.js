@@ -115,10 +115,10 @@ const config = {
     'docusaurus-theme-openapi-docs',
   ],
 
-   customFields: {
-    auth0Domain: process.env.AUTH0_DOMAIN,
-    auth0ClientId: process.env.AUTH0_CLIENT_ID
-  },
+  //  customFields: {
+  //   auth0Domain: process.env.AUTH0_DOMAIN,
+  //   auth0ClientId: process.env.AUTH0_CLIENT_ID
+  // },
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -175,15 +175,15 @@ const config = {
           //     }
           //   ]
           // },
-        {
-          type: 'dropdown',
-          label: 'Account',
-          position: 'right',
-          items: [
-            { to: '/signin', label: 'Sign in' },
-            { to: '/logout', label: 'Sign out' },
-          ],
-        }
+        // {
+        //   type: 'dropdown',
+        //   label: 'Account',
+        //   position: 'right',
+        //   items: [
+        //     { to: '/signin', label: 'Sign in' },
+        //     { to: '/logout', label: 'Sign out' },
+        //   ],
+        // }
 
         //  {to: '/release-notes', label: 'Release Notes', position: 'right', className: 'navbar__releaseNotesButton'},
           // {
