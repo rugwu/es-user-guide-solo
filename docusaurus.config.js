@@ -3,6 +3,7 @@
 // (when paired with `@ts-check`).
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
+require('dotenv').config();
 
 import {themes as prismThemes} from 'prism-react-renderer';
 
@@ -45,15 +46,21 @@ const config = {
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
+      /** @type {import('docusaurus-plugin-openapi-docs').Options} */
+      /** @type {import('@docusaurus/types/src/plugin').PluginOptions} */
       ({
         docs: {
           sidebarPath: './sidebars.js',
+          routeBasePath: 'docs',
+          docItemComponent: "@theme/ApiItem",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
+          path: 'release-notes',
+          routeBasePath: 'release-notes',
           showReadingTime: true,
           feedOptions: {
             type: ['rss', 'atom'],
@@ -75,6 +82,44 @@ const config = {
     ],
   ],
 
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'openapi',
+        docsPluginId: 'classic',
+
+        config: {
+          customerApi: {
+            specPath: 'static/api-specification/es-loyalty-api.yaml',
+            outputDir: 'docs/api/customer-apis',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'info',
+            },
+          },
+           promotionApi: {
+            specPath: 'static/api-specification/es-loyalty-api.yaml',
+            outputDir: 'docs/api/promotion-apis',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'info',
+            },
+          }  
+        }
+      }
+    ]
+  ],
+
+  themes: [
+    'docusaurus-theme-openapi-docs',
+  ],
+
+   customFields: {
+    auth0Domain: process.env.AUTH0_DOMAIN,
+    auth0ClientId: process.env.AUTH0_CLIENT_ID
+  },
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -90,19 +135,68 @@ const config = {
           src: 'img/es-symbol.svg',
         },
         items: [
-          {
-            type: 'docSidebar',
-            sidebarId: 'esConsoleSidebar',
+           {
+            to: '/docs/products',
             position: 'left',
-            label: 'ES Console',
+            label: 'Product Docs',
           },
-          // {to: '/blog', label: 'Blog', position: 'left'},
+          {
+            to: '/docs/integrations',
+            position: 'left',
+            label: 'Integrations',
+          },
+          {
+            to: '/docs/api',
+            position: 'left',
+            label: 'API Reference',
+          },
+           {
+            to: '/docs/release-notes',
+            position: 'left',
+            label: 'Release Notes',
+          },
+          // {
+          //   type: 'docSidebar',
+          //   sidebarId: 'esConsoleSidebar',
+          //   position: 'left',
+          //   label: 'ES Console',
+          // },
+          // {
+          //   type: 'dropdown',
+          //   position: 'left',
+          //   label: 'API Reference',
+          //   items: [
+          //     {
+          //       type: 'doc',
+          //       // docsPluginId: 'api',
+          //       docId: 'api-reference/index',
+          //       label: 'ES Loyalty API',
+
+          //     }
+          //   ]
+          // },
+        {
+          type: 'dropdown',
+          label: 'Account',
+          position: 'right',
+          items: [
+            { to: '/signin', label: 'Sign in' },
+            { to: '/logout', label: 'Sign out' },
+          ],
+        }
+
+        //  {to: '/release-notes', label: 'Release Notes', position: 'right', className: 'navbar__releaseNotesButton'},
           // {
           //   href: 'https://github.com/facebook/docusaurus',
           //   label: 'GitHub',
           //   position: 'right',
           // },
         ],
+      },
+      docs: {
+        sidebar: {
+          autoCollapseCategories: true,
+        }
       },
       footer: {
         style: 'dark',

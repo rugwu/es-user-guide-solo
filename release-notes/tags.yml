@@ -1,0 +1,11 @@
+console:
+  label: Console
+  permalink: /console
+  description: ES Loyalty console
+
+loyalty:
+  label: Loyalty
+  permalink: /loyalty
+  description: ES Loyalty platform
+
+
