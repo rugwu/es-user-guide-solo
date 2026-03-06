@@ -1,1 +1,0 @@
-{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object","properties":{"identifierType":{"type":"string"},"identifierValue":{"type":"string","format":"email"}}},"example":{"identifierType":"EMAIL","identifierValue":"tommylee@esmail.com"}}}}}

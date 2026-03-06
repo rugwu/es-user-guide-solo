@@ -18,12 +18,11 @@ This documentation site serves as the single source of truth for:
 
 ⚠️ Note: This repository is private and intended for authorized contributors only.
 
-
 ## Live Site
 
 The documentation site is available at:
 
-``` Code
+```Code
 https://<org-or-username>.github.io/<repo-name>/
 ```
 
@@ -43,8 +42,8 @@ _(Access may be restricted depending on repository permissions.)_
 
 _Structure may vary depending on the documentation framework used._
 
-
 ## Getting Started
+
 ### Prerequisites
 
 Ensure you have the following installed:
@@ -95,6 +94,7 @@ This site is automatically deployed via GitHub Pages when changes are merged int
 5. Automatic build and publish
 
 Deployment configuration is managed through:
+
 - Repository settings
 - GitHub Actions workflows (if configured)
 
@@ -121,7 +121,6 @@ Because this repository is private:
 - Access is restricted to authorized users
 - Do not share repository contents externally
 - Follow company security policies
-
 
 ## Reporting Issues
 

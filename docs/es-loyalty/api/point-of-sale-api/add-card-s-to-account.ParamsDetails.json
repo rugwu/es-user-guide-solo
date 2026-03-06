@@ -1,0 +1,1 @@
+{"parameters":[{"name":"correlation_id","in":"path","required":true,"schema":{"type":"string"},"example":"{{correlation_id}}"}]}

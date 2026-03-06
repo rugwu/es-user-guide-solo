@@ -19,26 +19,19 @@
 //   );
 // }
 
-
-
-
-import React from 'react';
-import Link from '@docusaurus/Link';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import {useAuth} from '@site/src/auth/AuthContext';
+import React from "react";
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { useAuth } from "@site/src/auth/AuthContext";
 
 export default function LogoutButton(props) {
-  const {isLoading, isAuthenticated} = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
 
   if (isLoading || !isAuthenticated) {
     return null; // hide button until logged in
   }
 
-  const {
-    to = '/logout',
-    label = 'Logout',
-    className = '',
-  } = props;
+  const { to = "/logout", label = "Logout", className = "" } = props;
 
   return (
     <Link

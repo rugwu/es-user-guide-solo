@@ -6,32 +6,31 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #0070A3;
-  --ifm-color-primary-dark: #00557D;
+  --ifm-color-primary: #0070a3;
+  --ifm-color-primary-dark: #00557d;
   --ifm-color-primary-darker: #003147;
-  --ifm-color-primary-darkest: #00111A;
-  --ifm-color-primary-light: #008FD1;
-  --ifm-color-primary-lighter: #5CCBFF;
-  --ifm-color-primary-lightest: #8ADAFF;
+  --ifm-color-primary-darkest: #00111a;
+  --ifm-color-primary-light: #008fd1;
+  --ifm-color-primary-lighter: #5ccbff;
+  --ifm-color-primary-lightest: #8adaff;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
-  --ifm-color-primary: #3E9CC1;  
-  --ifm-color-primary-dark: #327E9B;
-  --ifm-color-primary-darker: #28647B;
-  --ifm-color-primary-darkest: #1D4859;
-  --ifm-color-primary-light: #61AECC;
-  --ifm-color-primary-lighter: #84BFD7;
-  --ifm-color-primary-lightest: #A6D1E2;
+[data-theme="dark"] {
+  --ifm-color-primary: #3e9cc1;
+  --ifm-color-primary-dark: #327e9b;
+  --ifm-color-primary-darker: #28647b;
+  --ifm-color-primary-darkest: #1d4859;
+  --ifm-color-primary-light: #61aecc;
+  --ifm-color-primary-lighter: #84bfd7;
+  --ifm-color-primary-lightest: #a6d1e2;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-
 .navbar__releaseNotesButton {
-  background: #00557D;
+  background: #00557d;
   color: #fff !important;
   padding: 0.45rem 0.9rem;
   border-radius: 8px;
@@ -41,13 +40,15 @@
   display: inline-flex;
   align-items: center;
 
-  transition: background-color 250ms ease-in-out, transform 250ms ease-in-out, box-shadow 250ms ease-in-out;
+  transition:
+    background-color 250ms ease-in-out,
+    transform 250ms ease-in-out,
+    box-shadow 250ms ease-in-out;
 }
-
 
 .navbar__releaseNotesButton:hover,
 .navbar__releaseNotesButton:focus-visible {
-  background: #327E9B;
+  background: #327e9b;
   color: #fff !important;
   text-decoration: none;
 
@@ -61,7 +62,7 @@
 }
 
 .navbar__logoutButton {
-  background: #00557D;
+  background: #00557d;
   color: #fff !important;
   padding: 0.45rem 0.9rem;
   border-radius: 8px;
@@ -70,6 +71,6 @@
 }
 
 .navbar__logoutButton:hover {
-  background: #327E9B;
+  background: #327e9b;
   text-decoration: none;
 }

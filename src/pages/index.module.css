@@ -22,38 +22,26 @@
   justify-content: center;
 } */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .hero {
   position: relative;
   overflow: hidden;
   padding: clamp(2.5rem, 4vw, 4rem) 0;
   background:
-    radial-gradient(900px 360px at 75% 20%, rgba(0, 0, 0, 0.06), transparent 60%),
+    radial-gradient(
+      900px 360px at 75% 20%,
+      rgba(0, 0, 0, 0.06),
+      transparent 60%
+    ),
     linear-gradient(180deg, rgba(0, 0, 0, 0.02), transparent 45%);
 }
 
-html[data-theme='dark'] .hero {
+html[data-theme="dark"] .hero {
   background:
-    radial-gradient(900px 360px at 75% 20%, rgba(255, 255, 255, 0.06), transparent 60%),
+    radial-gradient(
+      900px 360px at 75% 20%,
+      rgba(255, 255, 255, 0.06),
+      transparent 60%
+    ),
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 45%);
 }
 
@@ -124,7 +112,10 @@ html[data-theme='dark'] .hero {
   font-weight: 700;
   text-decoration: none !important;
   border: 1px solid transparent;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease;
 }
 
 .primaryButton {
@@ -144,7 +135,7 @@ html[data-theme='dark'] .hero {
   color: var(--ifm-font-color-base);
 }
 
-html[data-theme='dark'] .secondaryButton {
+html[data-theme="dark"] .secondaryButton {
   border-color: rgba(255, 255, 255, 0.18);
 }
 
@@ -167,7 +158,7 @@ html[data-theme='dark'] .secondaryButton {
   background: rgba(0, 0, 0, 0.05);
 }
 
-html[data-theme='dark'] .metaPill {
+html[data-theme="dark"] .metaPill {
   background: rgba(255, 255, 255, 0.07);
 }
 
@@ -200,7 +191,7 @@ html[data-theme='dark'] .metaPill {
   background: rgba(0, 0, 0, 0.03);
 }
 
-html[data-theme='dark'] .sectionAlt {
+html[data-theme="dark"] .sectionAlt {
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -243,12 +234,15 @@ html[data-theme='dark'] .sectionAlt {
   border: 1px solid rgba(0, 0, 0, 0.09);
   background: var(--ifm-background-surface-color);
   text-decoration: none !important;
-  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
   color: inherit;
   min-height: 140px;
 }
 
-html[data-theme='dark'] .card {
+html[data-theme="dark"] .card {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
@@ -259,7 +253,7 @@ html[data-theme='dark'] .card {
   color: inherit;
 }
 
-html[data-theme='dark'] .card:hover {
+html[data-theme="dark"] .card:hover {
   border-color: rgba(255, 255, 255, 0.18);
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
 }
@@ -281,7 +275,7 @@ html[data-theme='dark'] .card:hover {
   flex: 0 0 auto;
 }
 
-html[data-theme='dark'] .cardIconWrap {
+html[data-theme="dark"] .cardIconWrap {
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -326,7 +320,7 @@ html[data-theme='dark'] .cardIconWrap {
   background: var(--ifm-background-surface-color);
 }
 
-html[data-theme='dark'] .linkList {
+html[data-theme="dark"] .linkList {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
@@ -351,7 +345,9 @@ html[data-theme='dark'] .linkList {
   text-decoration: none !important;
   color: inherit;
   opacity: 0.9;
-  transition: color 140ms ease, opacity 140ms ease;
+  transition:
+    color 140ms ease,
+    opacity 140ms ease;
 }
 
 .linkListLink:hover {
@@ -365,14 +361,22 @@ html[data-theme='dark'] .linkList {
   border-radius: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.08);
   background:
-    radial-gradient(600px 260px at 20% 20%, rgba(0, 0, 0, 0.04), transparent 60%),
+    radial-gradient(
+      600px 260px at 20% 20%,
+      rgba(0, 0, 0, 0.04),
+      transparent 60%
+    ),
     var(--ifm-background-surface-color);
 }
 
-html[data-theme='dark'] .ctaPanel {
+html[data-theme="dark"] .ctaPanel {
   border-color: rgba(255, 255, 255, 0.12);
   background:
-    radial-gradient(600px 260px at 20% 20%, rgba(255, 255, 255, 0.06), transparent 60%),
+    radial-gradient(
+      600px 260px at 20% 20%,
+      rgba(255, 255, 255, 0.06),
+      transparent 60%
+    ),
     var(--ifm-background-surface-color);
 }
 
@@ -431,7 +435,7 @@ html[data-theme='dark'] .ctaPanel {
   background: var(--ifm-background-surface-color);
 }
 
-html[data-theme='dark'] .bottomCta {
+html[data-theme="dark"] .bottomCta {
   border-color: rgba(255, 255, 255, 0.12);
 }
 

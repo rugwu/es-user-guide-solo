@@ -1,98 +1,17 @@
-// import clsx from 'clsx';
-// import Link from '@docusaurus/Link';
-// import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-// import Layout from '@theme/Layout';
-// import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import React from "react";
+import clsx from "clsx";
+import Link from "@docusaurus/Link";
+import Layout from "@theme/Layout";
+import SearchBar from "@theme/SearchBar";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import Head from "@docusaurus/Head";
 
-// import Heading from '@theme/Heading';
-// import styles from './index.module.css';
-
-// function HomepageHeader() {
-//   const {siteConfig} = useDocusaurusContext();
-//   return (
-//     <header className={clsx('hero hero--primary', styles.heroBanner)}>
-//       <div className="container">
-//         <Heading as="h1" className="hero__title">
-//           {siteConfig.title}
-//         </Heading>
-//         <p className="hero__subtitle">Get started with {siteConfig.tagline}</p>
-//         {/* <div className={styles.buttons}>
-//           <Link
-//             className="button button--secondary button--lg"
-//             to="/docs/intro">
-//             Docusaurus Tutorial - 5min ⏱️
-//           </Link>
-//         </div> */}
-//       </div>
-//     </header>
-//   );
-// }
-
-// export default function Home() {
-//   const {siteConfig} = useDocusaurusContext();
-//   return (
-//     <Layout
-//       title={ `${siteConfig.title}`}
-//       description="Description will go into a meta tag in <head />">
-//       <HomepageHeader />
-//       <main>
-//         <HomepageFeatures />
-//       </main>
-//     </Layout>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import Layout from '@theme/Layout';
-import SearchBar from '@theme/SearchBar';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Head from '@docusaurus/Head';
-
-import styles from './index.module.css';
+import styles from "./index.module.css";
 
 function Icon({ name, className }) {
   // Small, consistent inline SVG icons (no external assets).
   switch (name) {
-    case 'rocket':
+    case "rocket":
       return (
         <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
           <path
@@ -118,7 +37,7 @@ function Icon({ name, className }) {
           />
         </svg>
       );
-    case 'book':
+    case "book":
       return (
         <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
           <path
@@ -140,7 +59,7 @@ function Icon({ name, className }) {
           />
         </svg>
       );
-    case 'code':
+    case "code":
       return (
         <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
           <path
@@ -169,14 +88,10 @@ function Icon({ name, className }) {
           />
         </svg>
       );
-    case 'layers':
+    case "layers":
       return (
         <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-          <path
-            d="M12 3 3 8l9 5 9-5-9-5Z"
-            fill="currentColor"
-            opacity=".14"
-          />
+          <path d="M12 3 3 8l9 5 9-5-9-5Z" fill="currentColor" opacity=".14" />
           <path
             d="M3 12l9 5 9-5"
             stroke="currentColor"
@@ -217,12 +132,28 @@ function HeroArt() {
     >
       <defs>
         <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="var(--ifm-color-primary)" stopOpacity="0.95" />
-          <stop offset="1" stopColor="var(--ifm-color-primary-lightest)" stopOpacity="0.75" />
+          <stop
+            offset="0"
+            stopColor="var(--ifm-color-primary)"
+            stopOpacity="0.95"
+          />
+          <stop
+            offset="1"
+            stopColor="var(--ifm-color-primary-lightest)"
+            stopOpacity="0.75"
+          />
         </linearGradient>
         <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="var(--ifm-color-primary)" stopOpacity="0.18" />
-          <stop offset="1" stopColor="var(--ifm-color-primary)" stopOpacity="0.02" />
+          <stop
+            offset="0"
+            stopColor="var(--ifm-color-primary)"
+            stopOpacity="0.18"
+          />
+          <stop
+            offset="1"
+            stopColor="var(--ifm-color-primary)"
+            stopOpacity="0.02"
+          />
         </linearGradient>
         <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="18" />
@@ -241,8 +172,23 @@ function HeroArt() {
           opacity="0.95"
         />
         <g opacity="0.95">
-          <rect x="55" y="78" width="160" height="110" rx="14" fill="var(--ifm-background-color)" />
-          <rect x="55" y="78" width="160" height="110" rx="14" fill="none" stroke="rgba(0,0,0,.08)" />
+          <rect
+            x="55"
+            y="78"
+            width="160"
+            height="110"
+            rx="14"
+            fill="var(--ifm-background-color)"
+          />
+          <rect
+            x="55"
+            y="78"
+            width="160"
+            height="110"
+            rx="14"
+            fill="none"
+            stroke="rgba(0,0,0,.08)"
+          />
           <path
             d="M78 112h80M78 138h115M78 164h60"
             stroke="var(--ifm-font-color-base)"
@@ -250,7 +196,13 @@ function HeroArt() {
             strokeWidth="8"
             strokeLinecap="round"
           />
-          <circle cx="195" cy="115" r="10" fill="var(--ifm-color-primary)" opacity="0.9" />
+          <circle
+            cx="195"
+            cy="115"
+            r="10"
+            fill="var(--ifm-color-primary)"
+            opacity="0.9"
+          />
         </g>
       </g>
     </svg>
@@ -281,7 +233,8 @@ function LinkList({ title, items }) {
       <ul className={styles.linkListUl}>
         {items.map((it) => {
           const isExternal =
-            it.external ?? (typeof it.to === 'string' && /^https?:\/\//.test(it.to));
+            it.external ??
+            (typeof it.to === "string" && /^https?:\/\//.test(it.to));
 
           return (
             <li key={it.to} className={styles.linkListLi}>
@@ -289,7 +242,7 @@ function LinkList({ title, items }) {
                 to={it.to}
                 className={styles.linkListLink}
                 {...(isExternal
-                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  ? { target: "_blank", rel: "noopener noreferrer" }
                   : null)}
               >
                 <span className={styles.linkText}>
@@ -344,51 +297,73 @@ export default function Home() {
 
   const primaryCards = [
     {
-      icon: 'rocket',
-      title: 'Get started',
-      description: 'Quick setup, core concepts, and your first successful integration.',
-      to: '/docs/getting-started/platform-overview',
+      icon: "rocket",
+      title: "Get started",
+      description:
+        "Quick setup, core concepts, and your first successful integration.",
+      to: "/docs/es-loyalty/getting-started/platform-overview",
     },
     {
-      icon: 'layers',
-      title: 'Guides',
-      description: 'Practical guides for common workflows and best practices.',
-      to: '/docs/business-recipes',
+      icon: "layers",
+      title: "Guides",
+      description: "Practical guides for common workflows and best practices.",
+      to: "/docs/es-loyalty/business-recipes",
     },
     {
-      icon: 'code',
-      title: 'API reference',
-      description: 'Endpoints, schemas, examples, and authentication details.',
-      to: '/docs/api',
+      icon: "code",
+      title: "API reference",
+      description: "Endpoints, schemas, examples, and authentication details.",
+      to: "/docs/es-loyalty/api",
     },
     {
-      icon: 'book',
-      title: 'Integrations',
-      description: 'Go live with integrations to tools like CataBoom and Dotdigital',
-      to: '/docs/integrations',
+      icon: "book",
+      title: "Integrations",
+      description:
+        "Go live with integrations to tools like CataBoom and Dotdigital",
+      to: "/docs/es-loyalty/integrations",
     },
   ];
 
   const popular = [
-    { label: 'Authentication & API keys', to: '/docs/api/authentication' },
-    { label: 'Webhooks', to: '/docs/api/webhooks' },
-    { label: 'Rate limits & retries', to: '/docs/api/rate-limits' },
-    { label: 'Errors & troubleshooting', to: '/docs/troubleshooting/api-error-codes' },
-    { label: 'Releases and changelog', to: '/docs/release-notes' },
+    {
+      label: "Authentication & API keys",
+      to: "/docs/es-loyalty/api/authentication",
+    },
+    { label: "Webhooks", to: "/docs/es-loyalty/api/webhooks" },
+    { label: "Rate limits & retries", to: "/docs/es-loyalty/api/rate-limits" },
+    {
+      label: "Errors & troubleshooting",
+      to: "/docs/es-loyalty/troubleshooting/api-error-codes",
+    },
+    { label: "Releases and changelog", to: "/docs/es-loyalty/release-notes" },
   ];
 
   const resources = [
-    { label: 'Architecture overview', to: '/docs/getting-started/architecture-overview' },
-    { label: 'Glossary', to: '/docs/glossary' },
-    { label: 'Status', to: '/docs/troubleshooting/performance-issues' },
-    { label: 'Support', to: 'https://esidevops.atlassian.net/servicedesk/customer/portals', external: true },
-    { label: 'Security', to: 'https://www.exchangesolutions.com/security-compliance' , external: true },
+    {
+      label: "Architecture overview",
+      to: "/docs/es-loyalty/getting-started/architecture-overview",
+    },
+    { label: "Glossary", to: "/docs/es-loyalty/glossary" },
+    {
+      label: "Status",
+      to: "/docs/es-loyalty/troubleshooting/performance-issues",
+    },
+    {
+      label: "Support",
+      to: "https://esidevops.atlassian.net/servicedesk/customer/portals",
+      external: true,
+    },
+    {
+      label: "Security",
+      to: "https://www.exchangesolutions.com/security-compliance",
+      external: true,
+    },
   ];
 
   return (
     <Layout
       title={siteConfig.title}
-      description={siteConfig.tagline || 'Documentation home'}
+      description={siteConfig.tagline || "Documentation home"}
     >
       <Head>
         {/* Optional: improve share previews if you have an image */}
@@ -397,15 +372,15 @@ export default function Home() {
 
       <main>
         <header className={styles.hero}>
-          <div className={clsx('container', styles.heroInner)}>
+          <div className={clsx("container", styles.heroInner)}>
             <div className={styles.heroLeft}>
-              <p className={styles.kicker}>Documentation</p>
+              <p className={styles.kicker}>ES Loyalty™ Documentation</p>
               <h1 className={styles.heroTitle}>
                 Build faster with clear guides and API references
               </h1>
               <p className={styles.heroSubtitle}>
-                Everything you need to integrate, test, and ship, organized by task, with
-                examples you can work with.
+                Everything you need to integrate, test, and ship, organized by
+                task, with examples you can work with.
               </p>
 
               <div className={styles.heroSearch}>
@@ -413,10 +388,16 @@ export default function Home() {
               </div>
 
               <div className={styles.heroButtons}>
-                <Link className={styles.primaryButton} to="/docs/getting-started/">
+                <Link
+                  className={styles.primaryButton}
+                  to="/docs/es-loyalty/getting-started/"
+                >
                   Start here
                 </Link>
-                <Link className={styles.secondaryButton} to="/docs/api/">
+                <Link
+                  className={styles.secondaryButton}
+                  to="/docs/es-loyalty/api/"
+                >
                   Explore APIs
                 </Link>
               </div>
@@ -461,13 +442,17 @@ export default function Home() {
               <div className={styles.ctaPanel}>
                 <h3 className={styles.ctaTitle}>Need a working example?</h3>
                 <p className={styles.ctaText}>
-                  Start from a runnable template and tailor it to your integration.
+                  Start from a runnable template and tailor it to your
+                  integration.
                 </p>
                 <div className={styles.ctaButtons}>
                   {/* <Link className={styles.primaryButtonSmall} to="/docs/sdks">
                     View SDKs
                   </Link> */}
-                  <Link className={styles.tertiaryLink} to="/docs/business-recipes">
+                  <Link
+                    className={styles.tertiaryLink}
+                    to="/docs/es-loyalty/business-recipes"
+                  >
                     Browse guides →
                   </Link>
                 </div>
