@@ -1,0 +1,1419 @@
+openapi: 3.0.0
+info:
+  title: Exchange Solutions ES Loyalty API Suites - Partner Program
+  version: 1.0.0
+  description: >-
+    # Overview
+
+
+    The Exchange Solutions ES Loyalty Platform has multiple API suites, each
+    aimed at a different type of consumer.
+
+
+    - **Customer Experience**: Use to power customer interactions by allowing
+    users to view, edit or interact with profile and offer data.
+        
+    - **Point of Sale**: Use for primarily transactional interactions, such as
+    at Retail Point of Sale or in online checkout experiences.
+        
+    - **Partner Programs**: Use to power links between the primary Loyalty
+    Program and external partners. Ex: You might have a banking partner that
+    wants to link their credit card to the Loyalty Program.
+        
+
+    # Using Postman Collection and Environments
+
+
+    A sample environment file has been included in this collection. However in
+    order to acquire valid values, please contact Exchange Solutions to acquire
+    the necessary information for your environment(s).
+
+
+    ## Required Environment Variables
+
+
+    | Variable | Purpose | Format | Note |
+
+    | --- | --- | --- | --- |
+
+    | base_url | Root URL to which all API calls are made | URL | This will be
+    combined with the environment name and the API suite ID to form the full
+    base URL for each suite. |
+
+    | env_name | Environment name or ID assigned to the instance of ES Loyalty
+    to interact with | String |  |
+
+    | authorization_url | Endpoint to request the Cognito Authorization Access
+    Tokens | URL | ex:
+    `https://client-prod.auth.us-east-1.amazoncognito.com/oauth2/token` |
+
+    | clientId | ID Used for OAuth 2.0 Client Credentials Authentication |
+    String | (!) Sensitive and confidential data! |
+
+    | clientSecret | Passphrase used to OAuth 2.0 Client Credentials
+    Authentication | String | (!) Sensitive and confidential data! |
+
+
+    ## Automatically Managed Environment Variables
+
+
+    Over the course of using this suite, some other variables will be captured
+    to allow smooth transition from operation to operation. A non-exhaustive
+    list follows:
+
+
+    | Variable | Purpose | Format | Note |
+
+    | --- | --- | --- | --- |
+
+    | call_id | Request Identifier | GUID (suggested) String, 32+ characters
+    long | The call ID is used to trace requests at the individual level,
+    allowing even more granularity. Each call ID should be unique within the
+    session it's used for. Where used, if not provided, ES Loyalty will generate
+    and report using a GUID. |
+
+    | correlation_id | Session Identifier | GUID (suggested) String, 32+
+    characters long | The correlation ID is used to trace each requests made
+    against sessions to our API suite. It is strongly suggested that it follow
+    the [OWASP rules for session
+    identifiers](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html#session-id-length)
+    This is also the value used to report on activity that occurred so that it
+    can be correlated back to the calling system. Each session should have a
+    globally unique session identifier, duplicates will be rejected. By default,
+    this collection uses GUIDs and generates them automatically for each session
+    |
+
+    | currentAccessToken | OAuth 2.0 Access Token | [Standardized
+    Format](https://www.oauth.com/oauth2-servers/access-tokens/) | A successful
+    OAuth 2.0 session was created if this has a value, or the value changed. |
+
+
+    ## Access Requirements
+
+
+    Access is granted on a per-suite basis. It is recommended that each business
+    unit obtain a separate grant (client id + secret) and keep it confidential.
+
+
+    It is possible to have grants to multiple suites using the same credentials
+    depending on the business case required. For example, an e-commerce site
+    might use some of the profile management capabilities of the _Customer
+    Experience_ suite while browsing and filling up their cart, while the
+    checkout screen would interact with the _Point of Sale_ suite. In that case,
+    it might make sense to grant both.
+
+
+    To obtain an OAuth token, the client ID, client secret, and authorization
+    URL are provided to you by Exchange Solutions and may then be used in a
+    JavaScript HTTP POST request to get the token. In Node.js, a library like
+    axios or fetch would be necessary to send the request, or the code could use
+    XMLHttpRequest in a browser environment. Here is the JavaScript code:
+
+
+    ``` javascript
+
+    const path = "{auth URL}";
+
+    const clientId = "{clientId}";
+
+    const clientSecret = "{clientSecret}";
+
+    const secret = btoa(clientId + ':' + clientSecret);
+
+    const echoPostRequest = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + secret,
+        'cache-control': 'no-cache'
+      },
+      body: new URLSearchParams({
+        'grant_type': 'client_credentials'
+      })
+    };
+
+    // Send the request
+
+    fetch(path, echoPostRequest)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+
+     ```
+
+    ### Currency Values
+
+
+    **Note:** All currency attributes are to be sent to ES Loyalty in their
+    penny value. eg. $54.23 should be sent as 5423.
+servers:
+  - url: "{{partner_url}}"
+paths:
+  /client/partners/{partner_id}/accounts/links:
+    get:
+      summary: Search Loyalty Account
+      parameters:
+        - name: email
+          in: query
+          schema:
+            type: string
+          example: "{{email_id}}"
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer {{currentAccessToken}}
+        - name: x-identifier-type
+          in: header
+          description: EMAIL, LOYALTY_ID, or PARTNER_LINK_ID
+          schema:
+            type: string
+          example: "{{identifier_type}}"
+      responses:
+        "200":
+          description: 200 - Searched by loyaltyId (Can Link)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  searchResults:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        requestParameter:
+                          type: string
+                        accountId:
+                          type: string
+                        accountStatus:
+                          type: string
+                        linkStatus:
+                          type: string
+                        loyaltyId:
+                          type: string
+              example:
+                searchResults:
+                  - requestParameter: "{{loyalty_id}}"
+                    accountId: 52bc100f-e73e-4147-b424-8e2d1a78d437
+                    accountStatus: ACTIVE
+                    linkStatus: CAN_LINK
+                    loyaltyId: "{{loyalty_id}}"
+        "404":
+          description: 404 - Invalid Base URL/Partner ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  errorMessage:
+                    type: string
+                  errorCode:
+                    type: string
+              example:
+                statusCode: 404
+                errorMessage: Partner 'NOT_A_PARTNER' cannot be found.
+                errorCode: INVALID_PARTNER_ID
+        default:
+          description: 200 - Success Result Account with Household
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  searchResults:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        linkStatus:
+                          type: string
+                        accountId:
+                          type: string
+                        accountStatus:
+                          type: string
+                        loyaltyId:
+                          type: string
+                          format: utc-millisec
+                        requestParameter:
+                          type: string
+                          format: email
+                        balance:
+                          type: object
+                          properties:
+                            pointsBalance:
+                              type: integer
+                            dollarBalance:
+                              type: integer
+                            availablePointBalance:
+                              type: integer
+                            availableDollarBalance:
+                              type: integer
+                            userMinRedeemPoints:
+                              type: integer
+                            userMaxRedeemPoints:
+                              type: integer
+                            userMinRedeemDollars:
+                              type: integer
+                            userMaxRedeemDollars:
+                              type: integer
+                            redeemablePointBalance:
+                              type: integer
+                            redeemableDollarBalance:
+                              type: integer
+                        household:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            role:
+                              type: string
+                            balance:
+                              type: object
+                              properties:
+                                totalPointsBalance:
+                                  type: integer
+                                totalDollarBalance:
+                                  type: number
+                                totalAvailablePointBalance:
+                                  type: integer
+                                totalAvailableDollarBalance:
+                                  type: number
+                                totalRedeemablePointBalance:
+                                  type: integer
+                                totalRedeemableDollarBalance:
+                                  type: number
+                                minRedeemPoints:
+                                  type: integer
+                                maxRedeemPoints:
+                                  type: integer
+                                minRedeemDollars:
+                                  type: integer
+                                maxRedeemDollars:
+                                  type: number
+              example:
+                searchResults:
+                  - linkStatus: CAN_LINK
+                    accountId: 0577625f-21ab-4753-bd1a-ba06b4af4339
+                    accountStatus: ACTIVE
+                    loyaltyId: "6105700000504985858"
+                    requestParameter: aayushf1asiqmo@gmail.com
+                    balance:
+                      pointsBalance: 0
+                      dollarBalance: 0
+                      availablePointBalance: 0
+                      availableDollarBalance: 0
+                      userMinRedeemPoints: 0
+                      userMaxRedeemPoints: 0
+                      userMinRedeemDollars: 0
+                      userMaxRedeemDollars: 0
+                      redeemablePointBalance: 0
+                      redeemableDollarBalance: 0
+                    household:
+                      id: 0577625f-21ab-4753-bd1a-ba06b4af4339
+                      role: PRIMARY
+                      balance:
+                        totalPointsBalance: 204265
+                        totalDollarBalance: 2042.65
+                        totalAvailablePointBalance: 204265
+                        totalAvailableDollarBalance: 2042.65
+                        totalRedeemablePointBalance: 204265
+                        totalRedeemableDollarBalance: 2042.65
+                        minRedeemPoints: 500
+                        maxRedeemPoints: 204265
+                        minRedeemDollars: 5
+                        maxRedeemDollars: 2042.65
+                  - linkStatus: CAN_LINK
+                    accountId: 935c4003-1932-46d2-bb96-f3934d25f04f
+                    accountStatus: ACTIVE
+                    loyaltyId: "6105700000579971585"
+                    requestParameter: hansonlee@esmail.com
+                    balance:
+                      pointsBalance: 0
+                      dollarBalance: 0
+                      availablePointBalance: -46005
+                      availableDollarBalance: -460.05
+                      userMinRedeemPoints: 0
+                      userMaxRedeemPoints: 0
+                      userMinRedeemDollars: 0
+                      userMaxRedeemDollars: 0
+                      redeemablePointBalance: -46005
+                      redeemableDollarBalance: -460.05
+      tags:
+        - Partner Programs API Suite
+      description: >-
+        Returns the loyalty account id and link status based on an email address
+        or loyaltyId or partnerLinkIds passed in. Up to 25 individual emails
+        and/or loyaltyIds or partnerLinkIds can be searched at once.
+
+
+        Note that "linkStatus": "CAN_LINK" is dependent on "status": true in the
+        partner configuration; likewise, the "balance" object and its attributes
+        being displayed depends on "balance": true in the partner configuration.
+
+
+        **X-Identifier-Type**
+
+
+        Possible Values
+
+
+        - LOYALTY_ID _(Default if not provided)_
+            
+        - PARTNER_LINK_ID
+            
+        - EMAIL
+            
+
+        ## Request
+
+
+        ### **Path Parameters**
+
+
+        - PartnerId - {{partner_id}}
+            
+
+        ### **Query Parameters**
+
+
+        - Email address - {{email_id}}
+            
+        - Card # - {{loyalty_id}}
+            
+        - partner link ID - {{partnerLinkId}}
+            
+
+        ## **Response**
+
+
+        | **Attribute** | **Definition** | Format | **Notes** |
+
+        | --- | --- | --- | --- |
+
+        | searchResults | Array of search results. | Array |  |
+
+        | requestParameter | The original search parameter that was matched to
+        this result. | String | This is the loyalty_id, the unique identifier on
+        the account. Note that this is returned only if the linkStatus is
+        "CAN_LINK" or "GHOST". |
+
+        | accountId | Return unique identifier of account | String |  |
+
+        | accountStatus | Returns status of account | Enum: "ACTIVE" or
+        "INVALID" | ACTIVE = active or unregistered  <br />INVALID = everything
+        else |
+
+        | loyaltyId | Returns unique loyalty identification number | Number |  |
+
+        | linkStatus | The current status of whether the account can be found
+        and linked. | Enum: "INVALID", "CAN_LINK", or "GHOST" | INVALID = not
+        found or cannot be linked  <br />CAN_LINK = found and can be linked 
+        <br />GHOST = account exists but cannot be linked due to account status |
+
+        | balance | Shows account balance information. | Object | Only shown if
+        enabled in the partner configuration. Includes points and dollar balance
+        information and min/max redemption limits. Includes from pointsBalance
+        to userMaxRedeemDollars below. |
+
+        | pointsBalance | The member's current point balance. | Number |  |
+
+        | dollarBalance | The member's current dollar balance. | Number |  |
+
+        | availablePointBalance | The current number of points available to the
+        member for redemption. | Number |  |
+
+        | availableDollarBalance | The current number of dollars available to
+        the member for redemption. | Number |  |
+
+        | userMinRedeemPoints | The minimum number of points the member can
+        redeem. | Number |  |
+
+        | userMinRedeemDollars | The minimum number of dollars the member can
+        redeem. | Number |  |
+
+        | userMaxRedeemPoints | The maximum number of points the member can
+        redeem. | Number |  |
+
+        | userMaxRedeemDollars | The maximum number of dollars the member can
+        redeem. | Number |  |
+
+        | household | Contains data about household related to loyalty account.
+        | Object | Contains objects and attributes below from id to balance |
+
+        | id | Unique identifier for the household. | String |  |
+
+        | role | Role of the member within the household. | Enum: "PRIMARY" or
+        "SECONDARY" | First member who sent household invitations is "PRIMARY",
+        all others are "SECONDARY" |
+
+        | balance | Object containing all relevant household balance data. |
+        Object | Contains attributes below from totalPointBalance to
+        maxRedeemDollars |
+
+        | totalPointBalance | Total point balance for the household. | Number | 
+        |
+
+        | totalDollarBalance | Total dollar balance for the household. | Number
+        |  |
+
+        | totalAvailablePointBalance | Total balance of available points. |
+        Number |  |
+
+        | totalAvailableDollarBalance | Total balance of available dollars. |
+        Number |  |
+
+        | totalRedeemablePointBalance | Total balance of redeemable points. |
+        Number |  |
+
+        | totalRedeemableDollarBalance | Total balance of redeemable dollars. |
+        Number |  |
+
+        | minRedeemPoints | Minimum number of points that can be redeemed. |
+        Number |  |
+
+        | maxRedeemPoints | Maximum number of points that can be redeemed. |
+        Number |  |
+
+        | minRedeemDollars | Minimum number of dollars that can be redeemed. |
+        Number |  |
+
+        | maxRedeemDollars | Maximum number of dollars that can be redeemed. |
+        Number |  |
+
+
+        ## Error Responses
+
+
+        | **statusCode** | **errorMessage** | **errorCode** | **Definition** |
+
+        | --- | --- | --- | --- |
+
+        | 404 Not Found | Partner {{partner_id}} cannot be found. |
+        INVALID_PARTNER_ID | The partner_id does not have a valid value. |
+    parameters:
+      - name: partner_id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "{{partner_id}}"
+    post:
+      summary: Manage Partner Links (Multiple accounts)
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer {{currentAccessToken}}
+      responses:
+        "200":
+          description: 200 - Maximum Failures
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  PAYMENT_CARD:
+                    type: object
+                    properties:
+                      success:
+                        type: integer
+                      unprocessed:
+                        type: integer
+                      unprocessedItems:
+                        type: object
+                        properties:
+                          add:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                accountId:
+                                  type: string
+                                linkId:
+                                  type: string
+                                last4:
+                                  type: string
+                                  format: utc-millisec
+                                metadata:
+                                  type: object
+                                  properties:
+                                    cardType:
+                                      type: string
+                                    cardHolderType:
+                                      type: string
+                                reasonCode:
+                                  type: string
+                                reasonMessage:
+                                  type: string
+                  SOME_LINK:
+                    type: object
+                    properties:
+                      success:
+                        type: integer
+                      unprocessed:
+                        type: integer
+                      unprocessedItems:
+                        type: object
+                        properties:
+                          add:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                accountId:
+                                  type: string
+                                linkId:
+                                  type: string
+                                last4:
+                                  type: string
+                                  format: utc-millisec
+                                metadata:
+                                  type: object
+                                  properties:
+                                    cardType:
+                                      type: string
+                                    cardHolderType:
+                                      type: string
+                                reasonCode:
+                                  type: string
+                                reasonMessage:
+                                  type: string
+              example:
+                PAYMENT_CARD:
+                  success: 1
+                  unprocessed: 6
+                  unprocessedItems:
+                    add:
+                      - accountId: c23e1f4a-ef5e-9efc466b9186
+                        linkId: 123456Token1234
+                        last4: "1234"
+                        metadata:
+                          cardType: D
+                          cardHolderType: Retail
+                        reasonCode: LINK_LIMIT_MET
+                        reasonMessage: Payment card has been linked to too many cards already
+                      - accountId: e01a90d1-a178-6920a7caaf15
+                        linkId: 111111Token1111
+                        last4: "1111"
+                        metadata:
+                          cardType: D
+                          cardHolderType: Retail
+                        reasonCode: DUPLICATE_REQUEST
+                        reasonMessage: Cannot process multiple requests for the same card.
+                      - accountId: 5137c499-1433-3e50fea2b63e
+                        linkId: 111111Token1111
+                        last4: "1111"
+                        metadata:
+                          cardType: D
+                          cardHolderType: Retail
+                        reasonCode: DUPLICATE_REQUEST
+                        reasonMessage: Cannot process multiple requests for the same card.
+                      - accountId: 8ecd44c4-0131-24a325c58c1b
+                        linkId: 222222Token2222
+                        last4: "2222"
+                        metadata:
+                          cardType: D
+                          cardHolderType: Retail
+                        reasonCode: DUPLICATE_LINK
+                        reasonMessage: Cannot process multiple requests for the same card.
+                      - accountId: 407daba2-5c6d-d59e68b6a5d7
+                        linkId: 222222Token2222
+                        metadata:
+                          cardType: D
+                          cardHolderType: Retail
+                        reasonCode: LAST4_REQUIRED
+                        reasonMessage: >-
+                          Last 4 must be provided for payment cards for this
+                          partner
+                      - accountId: invalidAccount
+                        linkId: 123456Token1234
+                        last4: "1234"
+                        metadata:
+                          cardType: D
+                          cardHolderType: Retail
+                        reasonCode: INVALID_ACCOUNT
+                        reasonMessage: The provided account id does not exist.
+                SOME_LINK:
+                  success: 0
+                  unprocessed: 1
+                  unprocessedItems:
+                    add:
+                      - accountId: 4d0e3b68-8564-77c40390698b
+                        linkId: 333333Token3333
+                        last4: "3333"
+                        metadata:
+                          cardType: D
+                          cardHolderType: Retail
+                        reasonCode: UNSUPPORTED_LINK_TYPE
+                        reasonMessage: Link type 'SOME_LINK' is not a supported link type.
+        "400":
+          description: 400 - Malformed Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  errorMessage:
+                    type: string
+                  errorCode:
+                    type: string
+                  comment:
+                    type: string
+              example:
+                statusCode: 400
+                errorMessage: Request was malformed
+                errorCode: MALFORMED_REQUEST
+                comment: >-
+                  Request was not formatted properly or was missing required
+                  content.
+        "404":
+          description: 404 - Invalid Base URL/Partner ID
+          content:
+            application/json:
+              schema:
+                type: object
+              example: |-
+                {
+                    "statusCode": 404,
+                    "errorMessage": "Partner "{{partner_id}}" cannot be found.",
+                    "errorCode": "INVALID_PARTNER_ID",
+                    "comment": "The partner_id in the request environment does not match a partner_id in the system."
+                }
+      tags:
+        - Partner Programs API Suite
+      security:
+        - OAuth2: []
+      description: >-
+        Allows external client to create one or more links to a single loyalty
+        program for one or more accounts.
+
+
+        ## **Request**
+
+
+        ### **Body**
+
+
+        See example Request below to view hierarchy.
+
+
+        | **Attribute** | **Definition** | **Format** | **Notes** |
+
+        | --- | --- | --- | --- |
+
+        | PAYMENT_CARD | Link-type map | Object | Contains all fields below |
+
+        | {{operation}} | Type of operation on card | Enum: "add", "remove", or
+        "update" | Contains all fields below to cardholderType |
+
+        | accountId | Unique loyalty account identifier | String | GUID format |
+
+        | linkId | External identifier | String | Required, needed to attempt a
+        link. For instance, hashed payment card. |
+
+        | bin | Bank identification number | Number, 6 digits | Optional |
+
+        | last4 | Last 4 digits of the card number | Number, 4 digits | Required
+        |
+
+        | metadata | Additional information about card | Object | Optional,
+        contains cardType and cardholderType |
+
+        | cardType | Card type | String | "D" = debit, "C" = credit |
+
+        | cardholderType | Card holder type | Enum: "Retail" or "Business" |  |
+
+
+        ## **Response**
+
+
+        View example response to see hierarchy.
+
+
+        | **Attribute** | **Definition** | **Format** | **Notes** |
+
+        | --- | --- | --- | --- |
+
+        | PAYMENT_CARD | Link-type map | Object | Contains all fields below |
+
+        | success | Number of items that were successful processed from the
+        request | Number |  |
+
+        | unprocessed | Number of items that were not successfully processed |
+        Number |  |
+
+        | unprocessedItems | Returns information about each item that was not
+        processed | Object | Contains all fields below |
+
+        | {{operation}} | Type of operation on card | Enum: "add", "remove", or
+        "update" |  |
+
+        | accountId | Unique loyalty account identifier | String | GUID format |
+
+        | linkId | External identifier | String | Required. For instance, hashed
+        payment card. |
+
+        | bin | Bank identification number | Number, 6 digits | Optional |
+
+        | last4 | Last 4 digits of the card number | Number, 4 digits | Required
+        |
+
+        | metadata | Additional information about card | Object | Optional,
+        contains cardType and cardholderType |
+
+        | cardType | Card type | String | "D" = debit, "C" = credit |
+
+        | cardholderType | Card holder type | Enum: "Retail" or "Business" |  |
+
+        | reasonCode | Code for an update failure | Enum: "LINK_LIMIT_MET",
+        "DUPLICATE_REQUEST", "DUPLICATE_LINK", "LAST_4_REQUIRED",
+        "INVALID_ACCOUNT", or "UNSUPPORTED_LINK_TYPE",
+        "ACCOUNT_STATUS_IS_CLOSED" |  |
+
+        | reasonMessage | Detailed explanation of the reason for an update
+        failure | String | For example: "The provided account id does not
+        exist." |
+
+
+        ## Error Responses
+
+
+        | **statusCode** | **errorMessage** | **errorCode** | **Definition** |
+
+        | --- | --- | --- | --- |
+
+        | 400 Bad Request | Request was malformed. | MALFORMED_REQUEST | Request
+        was no formatted properly or was missing required content. |
+
+        | 400 Bad Request | Cannot do more than 25 operations in a single
+        request, you requested {{n}}. | EXCEEDED_MAXIMUM_OPERATIONS | Reduce the
+        number of operations, then send the request again. |
+
+        | 404 Not Found | Partner {{partner_id}} cannot be found. |
+        INVALID_PARTNER_ID | The partner_id in the request environment does not
+        match a partner_id in the system. |
+
+        | 404 Not Found | Account {{account_id}} cannot be linked. | CANNOT_LINK
+        | The account cannot be linked (for example, because the member is
+        unregistered). |
+  /client/partners/{partner_id}/adhoc-reward:
+    post:
+      summary: Issue Ad Hoc Reward
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer {{currentAccessToken}}
+      responses:
+        "200":
+          description: 200 - Issue Ad Hoc Reward
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                  message:
+                    type: string
+              example:
+                transactionId: 45b0aca9-759a-43fd-a1ce-4a3239928c8e
+                message: Reward added to member balance.
+        "400":
+          description: 400 - Invalid Business Unit
+          content:
+            application/json:
+              schema:
+                type: object
+              example: "{\r\n    \"statusCode\": 400,\r\n    \"errorMessage\": \"Business unit \"{{businessUnit}}\" is not a valid business unit.\"\r\n    \"errorCode\": \"INVALID_REQUEST\",\r\n    \"comment\": \"businessUnit does not contain a valid business unit value. Check to make sure the field is included in the request and that the value is included and correct.\"\r\n}"
+      tags:
+        - Partner Programs API Suite
+      description: >-
+        ## Request
+
+
+        This request is to issue points directly to the members.
+
+
+        ### Body
+
+
+        | **Attribute** | **Definition** | **Format** | **Notes** |
+
+        | --- | --- | --- | --- |
+
+        | correlationId | Unique identifier for the session | String | This has
+        the same requirements of uniqueness as correlationId path variable in
+        CUX and POS API calls. |
+
+        | identifierType | Type of identifier for looking up member’s account. |
+        Enum, commonly-used values: ACCOUNT_ID, EXTERNAL_ID, LOYALTY_ID,
+        PARTNER_LINK_ID, EMAIL |  |
+
+        | identifierValue | Value of the identifier for looking up member’s
+        account. | String |  |
+
+        | businessUnit | The business unit to which this transaction should be
+        associated with. It is also used for reward identifier lookup. | String
+        |  |
+
+        | externalReferenceId | Reference identifier of the associated
+        transaction in “client’s system” | String | Optional |
+
+        | rewardId | Identifier for the reward. | String |  |
+
+        | rewardAmount | Amount of points to be rewarded | Integer | If negative
+        value is provided, the transaction will be treated the same way as a
+        “Discretionary” reward with negative points. The points will be debited
+        from the balance and the same for the FIFO treatment. |
+
+        | sessionID | Unique identifier for this session. | String | Optional |
+
+        | extendedData | Additional data required for the ad hoc reward. |
+        Object | Optional, but may be required by the client to facilitate
+        specific use cases. Additional key:value pairs used by the client are in
+        this object; the example of attributes below is to facilitate gameplay |
+
+        | originalTransactionID | Unique identifier for the transaction
+        associated with gameplay reward | String |  |
+
+        | offerCode | Unique identifier for the associated code | String |  |
+
+        | gameplayID | Unique identifier for the instance of gameplay | String
+        |  |
+
+
+        ## Response
+
+
+        For hierarchy information, view the sample Response code.
+
+
+        | **Attribute** | **Definition** | **Format** | **Note** |
+
+        | --- | --- | --- | --- |
+
+        | transactionId | GUID uniquely identifying the account | String |  |
+
+        | message | Message indicating that the request was successfully
+        processed. | String |  |
+
+        | errorCode | Short code for the error | Number | Optional. Only if the
+        request was rejected. |
+
+        | errorMessage | Message briefly describing the error. | String |
+        Optional. Only if the request was rejected. |
+
+
+        ## Error Responses
+
+
+        | **statusCode** | **errorMessage** | **errorCode** | **Definition** |
+
+        | --- | --- | --- | --- |
+
+        | 400 Bad Request | correlationID is mandatory and required to be
+        non-empty. | INVALID_REQUEST | Body parameter correlationId is not
+        provided. |
+
+        | 400 Bad Request | {{businessUnit}} is not a valid business unit. |
+        INVALID_BUSINESS_UNIT | Business Unit is not valid. |
+
+        | 400 Bad Request | Reward identifier is invalid. | INVALID_REQUEST |
+        Invalid Reward Identifier is provided. |
+
+        | 400 Bad Request | Maximum allowed limit for reward amount that can be
+        issued per transaction is 10000. | INVALID_REQUEST | Exceeded maximum
+        allowed limit of reward amount. |
+
+        | 400 Bad Request | identifierType is mandatory and required to be
+        non-empty. | INVALID_REQUEST | IdentifierType is not provided. |
+
+        | 400 Bad Request | Adhoc Reward feature is not enabled. |
+        INVALID_REQUEST | Adhoc Reward feature is not enabled. |
+
+        | 400 Bad Request | IsLoyaltyIdentifier is disabled for this partner. |
+        INVALID_REQUEST | identifierType PARTNER_LINK_ID can be used only if the
+        associated Partner is configured with IsLoyaltyIdentifier": true |
+
+        | 400 Bad Request | Partner ${partnerID} does not exist. |
+        INVALID_REQUEST | Partner doesn't found for given partner_id. |
+
+        | 400 Bad Request | identifierValue is mandatory and required to be
+        non-empty. | INVALID_REQUEST | identifierValue is not provided. |
+
+        | 400 Bad Request | rewardId is mandatory and required to be non-empty.
+        | INVALID_REQUEST | rewardId is not provided. |
+
+        | 400 Bad Request | rewardAmount is mandatory and required to be
+        non-empty. | INVALID_REQUEST | rewardAmount is not provided. |
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                correlationId:
+                  type: string
+                identifierType:
+                  type: string
+                identifierValue:
+                  type: string
+                businessUnit:
+                  type: string
+                externalReferenceId:
+                  type: string
+                rewardId:
+                  type: string
+                rewardAmount:
+                  type: integer
+            example:
+              correlationId: "{{correlationId}}"
+              identifierType: ACCOUNT_ID
+              identifierValue: 09ce5aaf-3839-46d3-b4b0-55425222226d
+              businessUnit: BUYCO
+              externalReferenceId: reference_to_get_PC
+              rewardId: MEGABANK_REWARD
+              rewardAmount: 2000
+    parameters:
+      - name: partner_id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "{{partner_id}}"
+  /client/partners/{partner_id}/adhoc-redeem:
+    post:
+      summary: Issue Ad Hoc Redemption
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer {{currentAccessToken}}
+      responses:
+        "200":
+          description: 200 - Redemption Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                  message:
+                    type: string
+              example:
+                transactionId: 45b0aca9-759a-4a3239928c8e
+                message: Redemption Successful.
+        "400":
+          description: 400 - Feature Not Enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  errorMessage:
+                    type: string
+                  errorCode:
+                    type: string
+              example:
+                statusCode: 400
+                errorMessage: ADHOC_REDEMPTION feature is not enabled.
+                errorCode: INVALID_REQUEST
+      tags:
+        - Partner Programs API Suite
+      description: >-
+        ## Request
+
+
+        This request is to redeem points of the members directly by the Partner.
+
+
+        In the case of households, the redemption amount is provided
+        proportionally from the contributors (including the initiator who is
+        redeeming the points). All contributors have their account balances
+        updated in accordance with the points they contributed and their Last
+        Activity Date (LAD) is updated as well.
+
+
+        If a contributor has a zero or insufficient redeemableAccountBalance to
+        fulfill their contribution, then that contribution is distributed among
+        the remaining contributors. There is a transaction cap on household
+        redemptions and a daily redemption cap as well.
+
+
+        Redemptions cannot be reserved or made using PHONE_NUMBER as the
+        X-Identifier-Type on Start Session, so if it is used, an error message
+        is returned.
+
+
+        ### Body
+
+
+        | **Attribute** | **Definition** | **Format** | **Notes** |
+
+        | --- | --- | --- | --- |
+
+        | correlationId | Unique identifier for the session | String | This has
+        the same requirements of uniqueness as correlationId path variable in
+        CUX and POS API calls. Mandatory |
+
+        | identifierType | Type of identifier for looking up member’s account. |
+        Enum, commonly-used values: EXTERNAL_ID, LOYALTY_ID, PARTNER_LINK_ID, |
+        Mandatory |
+
+        | identifierValue | Value of the identifier for looking up member’s
+        account. | String |  |
+
+        | businessUnit | The business unit to which this transaction should be
+        associated with. It is also used for reward identifier lookup. | String
+        | Mandatory |
+
+        | externalReferenceId | Reference identifier of the associated
+        transaction in “client’s system” | String | Optional |
+
+        | reservationDetails | Details regarding redemption | Object | Mandatory
+        |
+
+        | reservationDetails.redemptionId | Redemption Identifier against which
+        redemption will occur | String | For direct deposit to an account, this
+        would be "REDEEM_DIRECT_DEPOSIT"; for redemption to a statement credit,
+        "REDEEM_STATEMENT_CREDIT"; may also be another value such as
+        "REDEEM_WITHOUT_FULFILLMENT" |
+
+        | reservationDetails.reservationAmount | Amount to be redeemed | Integer
+        | Needs to be a positive integer. Optional but either this or
+        catalogueITems needs to be present. Both can be there at a time. |
+
+        | reservationDetails.fulfillmentEmailKey | Provides an email key or
+        identifier from the Email Address Book of alternative email(s) to notify
+        in case of member redemption. | String | Must be valid value from Email
+        Address Book |
+
+        | reservationDetails.catalogueItems | Array of catalogueITems which
+        correspond to some amount of points | \[object\] | Optional but
+        mandatory if reservationAmount is not provided. |
+
+        | reservationDetails.catalogueItems.id | Catalogue Item id as saved in
+        system | String | mandatory |
+
+        | reservationDetails.catalogueItems.quantity | Quantity of the catalogue
+        item | Integer | default = 1 Optional |
+
+
+        ## Response
+
+
+        For hierarchy information, view the sample Response code.
+
+
+        | **Attribute** | **Definition** | **Format** | **Note** |
+
+        | --- | --- | --- | --- |
+
+        | transactionId | GUID uniquely identifying the account | String |  |
+
+        | message | Message indicating that the request was successfully
+        processed. | String |  |
+
+        | errorCode | Short code for the error | Number | Optional. Only if the
+        request was rejected. |
+
+        | errorMessage | Message briefly describing the error. | String |
+        Optional. Only if the request was rejected. |
+
+
+        ## Error Responses
+
+
+        | **statusCode** | **errorMessage** | **errorCode** | **Definition** |
+
+        | --- | --- | --- | --- |
+
+        | 400 Bad Request | correlationID is mandatory and required to be
+        non-empty | MISSING_REQUIRED_FIELDS_ERROR | Body parameter correlationId
+        is not provided. |
+
+        | 400 Bad Request | businessUnit is mandatory and required to be
+        non-empty | MISSING_REQUIRED_FIELDS_ERROR | Body parameter businessUnit
+        is not provided. |
+
+        | 400 Bad Request | identifierType is mandatory and required to be
+        non-empty | MISSING_REQUIRED_FIELDS_ERROR | Body parameter
+        identifierType is not provided. |
+
+        | 400 Bad Request | identifierValue is mandatory and required to be
+        non-empty | MISSING_REQUIRED_FIELDS_ERROR | Body parameter
+        identifierValue is not provided. |
+
+        | 400 Bad Request | reservationDetails is mandatory and required to be
+        non-empty | MISSING_REQUIRED_FIELDS_ERROR | Body parameter
+        reservationDetails is not provided. |
+
+        | 400 Bad Request | Maximum allowed limit for reward amount that can be
+        issued per transaction is 10000. | INVALID_REQUEST | Exceeded maximum
+        allowed limit of reward amount. |
+
+        | 400 Bad Request | identifierType is mandatory and required to be
+        non-empty. | INVALID_REQUEST | IdentifierType is not provided. |
+
+        | 400 Bad Request | ADHOC_REDEMPTION feature is not enabled. |
+        INVALID_REQUEST | Adhoc Reward feature is not enabled. |
+
+        | 400 Bad Request | IsLoyaltyIdentifier is disabled for this partner. |
+        INVALID_REQUEST | identifierType PARTNER_LINK_ID can be used only if the
+        associated Partner is configured with IsLoyaltyIdentifier": true |
+
+        | 400 Bad Request | Partner ${partnerID} does not exist. |
+        INVALID_REQUEST | Partner doesn't found for given partner_id. |
+
+        | 400 Bad Request | Unknown loyalty identifier type provided. |
+        INVALID_REQUEST | Identifier type is unknown or of type PHONE_NUMBER,
+        which cannot be used for redemptions. |
+
+        | 400 Bad Request | Reservation allowance exceeded. | INVALID_REQUEST |
+        Daily redemption cap is exceeded |
+
+        | 400 Bad Request | Insufficient Funds. | INVALID_REQUEST | If user or
+        household has insufficient funds to redeem. |
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                correlationId:
+                  type: string
+                identifierType:
+                  type: string
+                identifierValue:
+                  type: string
+                businessUnit:
+                  type: string
+                externalReferenceId:
+                  type: string
+                reservationDetails:
+                  type: object
+                  properties:
+                    redemptionId:
+                      type: string
+                    reservationAmount:
+                      type: integer
+                    catalogueItems:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+            example:
+              correlationId: "{{correlation_id}}"
+              identifierType: PARTNER_LINK_ID
+              identifierValue: 56701561-0749-4c9e-b1f3-90d08c7c1c95
+              businessUnit: BUYCO
+              externalReferenceId: 123_reference_id_internal_to_PC
+              reservationDetails:
+                redemptionId: ADHOC_REDEEM_2
+                reservationAmount: 25000
+                catalogueItems:
+                  - id: ITEM_1
+                  - id: ITEM_2
+                    quantity: 3
+    parameters:
+      - name: partner_id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "{{partner_id}}"
+  /client/partners/{partner_id}/void:
+    post:
+      summary: Void Transaction
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer {{currentAccessToken}}
+      responses:
+        "400":
+          description: 400 - Void Not Allowed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  errorMessage:
+                    type: string
+                  errorCode:
+                    type: string
+                  comment:
+                    type: string
+              example:
+                statusCode: 400
+                errorMessage: Void transactions not supported
+                errorCode: INVALID_REQUEST
+                comment: Void transactions are not enabled.
+        default:
+          description: 200 - Void Transaction
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                  message:
+                    type: string
+              example:
+                transactionId: 331e16e9-b58e-5480309db0ce
+                message: Successful void transaction
+      tags:
+        - Partner Programs API Suite
+      description: >-
+        This request completely voids a given transaction.
+
+
+        ## Request
+
+
+        ### Body
+
+
+        | **Attribute** | **Definition** | **Format** | **Notes** |
+
+        | --- | --- | --- | --- |
+
+        | correlationId | Unique identifier for the session | String |
+        Required.  <br />This has the same requirements of uniqueness as
+        correlationId path variable in CUX and POS API calls. |
+
+        | originalTransactionId | Original transaction ID | String | Required |
+
+        | identifierType | Type of identifier for looking up member’s account. |
+        Enum, commonly-used values: ACCOUNT_ID, EXTERNAL_ID, LOYALTY_ID,
+        PARTNER_LINK_ID, EMAIL | Required |
+
+        | identifierValue | Value of the identifier for looking up member’s
+        account. |  | Required |
+
+        | externalReferenceId | Reference identifier of the associated
+        transaction in “client’s system” |  | Optional |
+
+        | channel | Indicator for request source | Enum, commonly-used values:
+        "STORE", "POS", "WEBSITE", "APP", "PARTNER" | Optional |
+
+
+        ## Response
+
+
+        | **Attribute** | **Definition** | **Format** | **Notes** |
+
+        | --- | --- | --- | --- |
+
+        | transactionId | Unique identifier for the void transaction | String | 
+        |
+
+        | message | Successful message | String |  |
+
+
+        ## Error Responses
+
+
+        | **statusCode** | **errorMessage** | **errorCode** | **Definition** |
+
+        | --- | --- | --- | --- |
+
+        | 400 Bad Request | Void transactions not supported | INVALID_REQUEST |
+        Void transactions are not enabled. |
+
+        | 400 Bad Request | originalTransactionID is mandatory and required to
+        be non-empty. | INVALID_REQUEST | Body parameter originalTransactionId
+        is not provided. |
+
+        | 400 Bad Request | correlationID is mandatory and required to be
+        non-empty. | INVALID_REQUEST | Body parameter correlationId is not
+        provided. |
+
+        | 400 Bad Request | identifierType is mandatory and required to be
+        non-empty. | INVALID_REQUEST | identifierType is not provided. |
+
+        | 400 Bad Request | identifierValue is mandatory and required to be
+        non-empty. | INVALID_REQUEST | identifierValue is not provided. |
+
+        | 400 Bad Request | IsLoyaltyIdentifier is disabled for this partner. |
+        INVALID_REQUEST | identifierType PARTNER_LINK_ID can be used only if the
+        associated Partner is configured if IsLoyaltyIdentifier is set to true.
+        |
+
+        | 400 Bad Request | Partner {partnerID} does not exist. |
+        INVALID_REQUEST | Partner not found for given partner_id. |
+
+        | 400 Bad Request | Original transaction belongs to another member |
+        INVALID_REQUEST | The original transaction provided belongs to another
+        member. |
+
+        | 400 Bad Request | Original transaction was already voided |
+        INVALID_REQUEST | The given original transaction was already voided. |
+
+        | 400 Bad Request | Void transaction not allowed | INVALID_REQUEST |
+        Void is not allowed for the request action of the given original
+        transaction. For example, void is allowed for ADHOC_REWARD and
+        ADHOC_REDEEM transactions, but the original transaction has request
+        action 'FINALIZE'. |
+
+        | 400 Bad Request | Transaction is older than {{adjustmentPeriod}} days.
+        | INVALID_REQUEST | The void transaction date is after the allowed
+        adjustment period for the original transaction. |
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                correlationId:
+                  type: string
+                identifierType:
+                  type: string
+                identifierValue:
+                  type: string
+                originalTransactionId:
+                  type: string
+                externalReferenceId:
+                  type: string
+                channel:
+                  type: string
+            example:
+              correlationId: "{{correlation_id}}"
+              identifierType: ACCOUNT_ID
+              identifierValue: 09ce5aaf-3839-46d3-b4b0-55425222226d
+              originalTransactionId: "{{originalTransactionId}}"
+              externalReferenceId: reference_to_get_PC
+              channel: PARTNER
+    parameters:
+      - name: partner_id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "{{partner_id}}"
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: "{{authorization_url}}"
+          scopes: {}

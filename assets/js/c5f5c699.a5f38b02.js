@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkes_user_guide=globalThis.webpackChunkes_user_guide||[]).push([[6705],{89035(s){s.exports=JSON.parse('{"tags":[{"label":"console","permalink":"/es-user-guide-solo/docs/tags/console","count":1},{"label":"loyalty","permalink":"/es-user-guide-solo/docs/tags/loyalty","count":1}]}')}}]);
